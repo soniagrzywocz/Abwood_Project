@@ -2,12 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
+	"go_server/config"
+	"go_server/db"
+	"go_server/log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/go-gem/log"
 	"github.com/gorilla/mux"
 )
 
@@ -57,6 +60,13 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	var configPath string
+	flag.StringVar(&configPath, "config_path", "/config/server.toml", "Path to TOML Configuration File.")
+
+	config.InitializeConfig(configPath)
+	log.InitializeLog()
+
+	db.CreateMySQLHandler(config.C.MySQL)
 
 	router := mux.NewRouter()
 
@@ -70,9 +80,10 @@ func main() {
 
 	srv := &http.Server{
 		Handler:      router,
-		Addr:         "127.0.0.1:8000",
+		Addr:         config.C.Server.ServerAddress,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
+		IdleTimeout:  15 * time.Second,
 	}
 
 	log.Fatal(srv.ListenAndServe())
