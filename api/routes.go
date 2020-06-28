@@ -30,13 +30,12 @@ func SetContactUsRoutes() {
 	mysqlIdRegex := "(?:[0-9]{1,24})"
 
 	expectedUrl := "/contact/")
-	expectedUrlWithRegex := fmt.Sprintf("/contact/{contactID:%s}/")
+	expectedUrlWithRegex := fmt.Sprintf("/contact/{contactID:%s}/", mysqlIdRegex)
 	router.HandleFuncVersioned(
 		API_VERSION,
 		expectedUrl,
 		contactHandler,).Methods("PUT", "GET").Name("contact")
 	)
-
 }
 
 */
