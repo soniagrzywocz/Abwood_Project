@@ -1,9 +1,29 @@
-package main
+package db
 
 import (
 	"database/sql"
 	"fmt"
+	"go_server/config"
+
+	"github.com/jmoiron/sqlx"
 )
+
+type ServDB struct {
+	*sqlx.DB
+}
+
+var persistentDb ServDB
+
+func CreateMySQLHandler(mysqlConfig config.MySQL) {
+	var err error
+	connectString := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8",
+		mysqlConfig.Username, mysqlConfig.Password, mysqlConfig.Host,
+		mysqlConfig.Database, mysqlConfig.Timezone)
+	persistentDb.DB, err = sqlx.Open("mysql", connectString)
+	if err != nil {
+		panic(err)
+	}
+}
 
 func main() {
 	db, err := sql.Open("mysql", "user:password@/dbname")
