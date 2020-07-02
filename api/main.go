@@ -89,27 +89,3 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 
 }
-
-/*
-package main
-
-import (
-	"net/http"
-	"log"
-	"github.com/gorilla/mux"
-)
-
-func YourHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Gotilla!\n"))
-}
-
-func main() {
-	r := mux.NewRouter()
-	// routes consist of a path and a handler function
-	r.HandleFunc("/", YourHandler)
-
-	// bind to a port and pass our router in
-	log.Fatal(http.ListenAndServe(":8000",r ))
-}
-
-*/
