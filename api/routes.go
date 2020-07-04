@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -20,8 +21,33 @@ func (r *LocalRouter) HandleFuncVersioned(version, path string, f func(http.Resp
 }
 
 func setRoutes(router *LocalRouter) {
+
+	r := mux.NewRouter()
+	route := r.NewRoute().HeadersRegexp("Origin", "^https://apprenticenship.com$")
+
+	yes, _ := http.NewRequest("GET", "apprenticenship.com", nil)
+	yes.Header.Set("Origin", "https://apprenticenship.com")
+
+	matchInfo := &mux.RouteMatch{}
+
+	fmt.Printf("Match: %v %q\n", route.Match(yes, matchInfo), yes.Header["Origin"])
+
 	//Setup Routes In Here
 	//Example: SetContactUsRoutes()
+}
+
+func contactHandler(w http.ResponseWriter, r *http.Request) {
+
+	//vars := mux.Vars(r)
+	w.Header().Set("Content-Type", "application/json")
+
+	query := r.URL.Query()
+	name := query.Get("name")
+	email := query.Get("email")
+	message := query.Get("message")
+
+	w.Write([]byte(fmt.Sprintf(`{"name": %s, "email": %s, "message": %s}`, name, email, message)))
+
 }
 
 /* Example:

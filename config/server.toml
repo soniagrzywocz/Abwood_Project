@@ -1,0 +1,19 @@
+# Toml Configuration File 
+
+[server]
+ServerAddress = "192.168.1.1"
+ServerRetries = 3
+ServerRetryTimeout = 20
+
+
+[MySQL]
+Host = "alpha"
+Username = "sgrzywocz"
+Password = "123test"
+Database = "db"
+Timezone = "Wed Jul 1 15:04:05 -0700 MST 2020" 
+
+[logging]
+ApiLogPath = "log/log.go"
+Log/Level = "all/debug/info/warn/error/fatal"
+
