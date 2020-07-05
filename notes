@@ -9,3 +9,5 @@ base_url/v1/contact.
 
 
 https://www.tutorialspoint.com/mysql/index.htm
+
+Running the code use go run ./api -config_path="path/to/config"

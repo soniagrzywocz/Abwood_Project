@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"go_server/config"
@@ -8,9 +9,11 @@ import (
 	"go_server/log"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
@@ -61,8 +64,10 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var configPath string
-	flag.StringVar(&configPath, "config_path", "/config/server.toml", "Path to TOML Configuration File.")
-
+	var wait time.Duration
+	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
+	flag.StringVar(&configPath, "config_path", "", "Path to TOML Configuration File.")
+	flag.Parse()
 	config.InitializeConfig(configPath)
 	log.InitializeLog()
 
@@ -86,6 +91,20 @@ func main() {
 		IdleTimeout:  15 * time.Second,
 	}
 
-	log.Fatal(srv.ListenAndServe())
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Println(err)
+		}
+	}()
+	//Graceful shutdown handling with ctrl+c and the various signal kill calls
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	//Block Until Signal Is Recieved
+	<-c
+	ctx, cancel := context.WithTimeout(context.Background(), wait)
+	defer cancel()
+	srv.Shutdown(ctx)
+	log.Println("shutting down")
+	os.Exit(0)
 
 }

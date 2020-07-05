@@ -16,7 +16,7 @@ var persistentDb ServDB
 
 func CreateMySQLHandler(mysqlConfig config.MySQL) {
 	var err error
-	connectString := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8",
+	connectString := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&time_zone=%s",
 		mysqlConfig.Username, mysqlConfig.Password, mysqlConfig.Host,
 		mysqlConfig.Database, mysqlConfig.Timezone)
 	persistentDb.DB, err = sqlx.Open("mysql", connectString)
