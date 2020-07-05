@@ -65,4 +65,12 @@ func InitializeLog() {
 	} else {
 		apiLogger = log.New(os.Stderr, log.Lshortfile|log.LstdFlags, level)
 	}
+
+	Debugf = apiLogger.Debugf
+	Errorf = apiLogger.Errorf
+	Error = apiLogger.Error
+	Infof = apiLogger.Infof
+	Printf = apiLogger.Printf
+	Warningf = apiLogger.Warningf
+	Println = apiLogger.Println
 }
