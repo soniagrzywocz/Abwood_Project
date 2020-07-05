@@ -40,7 +40,14 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 
 	//vars := mux.Vars(r)
 	w.Header().Set("Content-Type", "application/json")
-
+	//https://example.com/v2/contact?id=123
+	/*
+		json body: {
+			name: someName,
+			email: someEmail,
+			message: someMessage
+		}
+	*/
 	query := r.URL.Query()
 	name := query.Get("name")
 	email := query.Get("email")
@@ -64,4 +71,10 @@ func SetContactUsRoutes() {
 	)
 }
 
+*/
+
+/*
+func contactHandler(w http.ResponseWriter, r *http.Request) {
+    w.Write([]byte("Gorilla!\n"))
+}
 */
