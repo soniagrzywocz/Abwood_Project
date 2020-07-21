@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -21,8 +20,6 @@ func setRoutes(router *LocalRouter) {
 
 	router.HandleFunc("/", HomeHandler).Methods("GET", "PUT")
 	router.HandleFunc("/contact", ContactHandler).Methods("GET", "PUT")
-
-	log.Fatal(http.ListenAndServe(":8080", router))
 
 }
 
