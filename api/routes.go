@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -15,31 +16,21 @@ type LocalRouter struct {
 	*mux.Router
 }
 
-// HandleFuncVersioned is a small wrapper function for Handle Func to append our API Version constant automagically
-func (r *LocalRouter) HandleFuncVersioned(version, path string, f func(http.ResponseWriter, *http.Request)) *mux.Route {
-	return r.HandleFunc("/"+version+path, f)
-}
-
 func setRoutes(router *LocalRouter) {
+	// http.Handle("/", router)
 
-	r := mux.NewRouter()
-	route := r.NewRoute().HeadersRegexp("Origin", "^https://apprenticenship.com$")
+	router.HandleFunc("/", HomeHandler).Methods("GET", "PUT")
+	router.HandleFunc("/contact", ContactHandler).Methods("GET", "PUT")
 
-	yes, _ := http.NewRequest("GET", "apprenticenship.com", nil)
-	yes.Header.Set("Origin", "https://apprenticenship.com")
+	log.Fatal(http.ListenAndServe(":8080", router))
 
-	matchInfo := &mux.RouteMatch{}
-
-	fmt.Printf("Match: %v %q\n", route.Match(yes, matchInfo), yes.Header["Origin"])
-
-	//Setup Routes In Here
-	//Example: SetContactUsRoutes()
 }
 
-func contactHandler(w http.ResponseWriter, r *http.Request) {
+func ContactHandler(w http.ResponseWriter, r *http.Request) {
 
-	//vars := mux.Vars(r)
-	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintln(w, "Contact page!")
+
+	// w.Header().Set("Content-Type", "application/json")
 	//https://example.com/v2/contact?id=123
 	/*
 		json body: {
@@ -48,33 +39,10 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 			message: someMessage
 		}
 	*/
-	query := r.URL.Query()
-	name := query.Get("name")
-	email := query.Get("email")
-	message := query.Get("message")
-
-	w.Write([]byte(fmt.Sprintf(`{"name": %s, "email": %s, "message": %s}`, name, email, message)))
 
 }
 
-/* Example:
-func SetContactUsRoutes() {
-	//Regex For If We Are Expecting an ID in the URL
-	mysqlIdRegex := "(?:[0-9]{1,24})"
-
-	expectedUrl := "/contact/")
-	expectedUrlWithRegex := fmt.Sprintf("/contact/{contactID:%s}/", mysqlIdRegex)
-	router.HandleFuncVersioned(
-		API_VERSION,
-		expectedUrl,
-		contactHandler,).Methods("PUT", "GET").Name("contact")
-	)
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintln(w, "Welcome to home page!")
 }
-
-*/
-
-/*
-func contactHandler(w http.ResponseWriter, r *http.Request) {
-    w.Write([]byte("Gorilla!\n"))
-}
-*/
