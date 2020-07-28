@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"go_server/models"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -18,28 +20,42 @@ type LocalRouter struct {
 func setRoutes(router *LocalRouter) {
 	// http.Handle("/", router)
 
-	router.HandleFunc("/", HomeHandler).Methods("GET", "PUT")
+	router.HandleFunc("/", HomeHandler)
 	router.HandleFunc("/contact", ContactHandler).Methods("GET", "PUT")
 
 }
 
 func ContactHandler(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Fprintln(w, "Contact page!")
+	// fmt.Fprintln(w, "Contact page!")
 
-	// w.Header().Set("Content-Type", "application/json")
-	//https://example.com/v2/contact?id=123
-	/*
-		json body: {
-			name: someName,
-			email: someEmail,
-			message: someMessage
-		}
-	*/
+	w.Header().Set("Content-Type", "application/json")
+
+	var c models.Contact
+	err := json.NewDecoder(r.Body).Decode(&c)
+
+	if err != nil {
+		fmt.Println("Error")
+	}
+
+	json.NewEncoder(w).Encode(c)
 
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintln(w, "Welcome to home page!")
+
+	fmt.Fprintln(w, "Welcome to the home page")
+	//w.Header().Set("Content-Type", "application/json")
+
+	// probably not necessary here since it's just the home page, not the contact page
+
+	// var c models.Contact
+	// err := json.NewDecoder(r.Body).Decode(&c)
+
+	// if err != nil {
+	// 	fmt.Println("Error")
+	// }
+
+	// json.NewEncoder(w).Encode(c)
+
 }

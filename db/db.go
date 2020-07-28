@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"go_server/config"
+	"go_server/models"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -25,55 +26,32 @@ func CreateMySQLHandler(mysqlConfig config.MySQL) {
 	}
 }
 
-func main() {
+// function that selects struct info from the table
+func getInfo(name string) (err error) {
 	db, err := sql.Open("mysql", "user:password@/dbname")
-	if err != nil {
-		panic(err.Error())
-	}
 	defer db.Close()
-
-	//Execute the query
-	rows, err := db.Query("SELECT * FROM table")
 	if err != nil {
-		panic(err.Error())
+		fmt.Println(err.Error())
 	}
 
-	// get columns name
-	columns, err := rows.Columns()
+	err = db.Ping()
 	if err != nil {
-		panic(err.Error())
+		fmt.Println(err.Error())
 	}
 
-	// make slice for values
-	values := make([]sql.RawBytes, len(columns))
+	var c models.Contact
+	err = db.QueryRow("select name, email, message from contacts WHERE name = ?", name).Scan(&c.Name, &c.Email, &c.Message)
 
-	//copying references into slice for rows.Scan
-	scanArgs := make([]interface{}, len(values))
-	for i := range values {
-		scanArgs[i] = &values[i]
+	if err != nil {
+		fmt.Println(err.Error())
 	}
 
-	//fetch rows
-	for rows.Next() {
-		// get RawBytes from data
-		err = rows.Scan(scanArgs...)
-		if err != nil {
-			panic(err.Error())
-		}
+	fmt.Printf("Name: %s\n Email: %s\n Message: %s\n", c.Name, c.Email, c.Message)
 
-		// print each column as string
-		var value string
-		for i, col := range values {
-			if col == nil {
-				value = "NULL"
-			} else {
-				value = string(col)
-			}
-			fmt.Println(columns[i], ":", value)
-		}
+	return err
 
-	}
-	if err = rows.Err(); err != nil {
-		panic(err.Error())
-	}
+}
+func main() {
+
+	//getInfo()
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"go_server/config"
 	"go_server/db"
@@ -10,57 +9,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
-
-//spaHandler implements the http.Handler so we can use it
-// to respond to HTTP requests. The path to the static directory and path
-// to the index file within the static directory are used to
-// serve the SPA in de given static directory
-
-type spaHandler struct {
-	staticPath string
-	indexPath  string
-}
-
-/*
-ServeHTTP inspects the URl path to locate a file within the static dir
-on the SPA handler. If a file is found, it will be served. If not, the file
-located at the indedx path on the SPA handler will be srved. This is suitable
-behavior for serving an SPA
-*/
-func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// get the absolute path to prevent directory traversal
-	path, err := filepath.Abs(r.URL.Path)
-	if err != nil {
-		//if we failed to get the absolute path respond with a 400 bad request and stop
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// prepend the path with the path to the static directory
-	path = filepath.Join(h.staticPath, path)
-
-	// check whether a fle exists at a given path
-	_, err = os.Stat(path)
-	if os.IsNotExist(err) {
-		// file does not exist, serve index.html
-		http.ServeFile(w, r, filepath.Join(h.staticPath, h.indexPath))
-		return
-	} else if err != nil {
-		// if we got an error (that wasn't that the file doesn't exist) stating
-		// the file, return a 500 internal server error and stop
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// otherwise, use http.FileServer to serve the static dir
-	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
-}
 
 func main() {
 	var configPath string
@@ -73,15 +26,8 @@ func main() {
 
 	db.CreateMySQLHandler(config.C.MySQL)
 
-	router := mux.NewRouter()
-
-	router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
-		// an example API handler
-		json.NewEncoder(w).Encode(map[string]bool{"ok": true})
-	})
-
-	spa := spaHandler{staticPath: "build", indexPath: "index.html"}
-	router.PathPrefix("/").Handler(spa)
+	router := &LocalRouter{mux.NewRouter()}
+	setRoutes(router)
 
 	srv := &http.Server{
 		Handler:      router,
