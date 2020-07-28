@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"go_server/db"
 	"go_server/models"
 	"net/http"
 
@@ -39,6 +40,10 @@ func ContactHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(c)
+
+	// problem in passing here
+
+	db.GetInfo(&c) // calling the mysql db
 
 }
 

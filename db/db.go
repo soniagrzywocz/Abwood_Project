@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"go_server/config"
 	"go_server/models"
@@ -27,7 +28,7 @@ func CreateMySQLHandler(mysqlConfig config.MySQL) {
 }
 
 // function that selects struct info from the table
-func getInfo(name string) (err error) {
+func GetInfo(name string) (err error) {
 	db, err := sql.Open("mysql", "user:password@/dbname")
 	defer db.Close()
 	if err != nil {
@@ -46,12 +47,20 @@ func getInfo(name string) (err error) {
 		fmt.Println(err.Error())
 	}
 
-	fmt.Printf("Name: %s\n Email: %s\n Message: %s\n", c.Name, c.Email, c.Message)
+	//fmt.Printf("Name: %s\n Email: %s\n Message: %s\n", c.Name, c.Email, c.Message)
+
+	b, err := json.Marshal(c)
+
+	fmt.Println(b)
+	//instance of a contact
+
+	//marshal a JSON-encoded version of m using json.Marshal
+	// b, err := json.Marshal(m)
 
 	return err
-
 }
-func main() {
 
-	//getInfo()
-}
+// func main() {
+
+// 	//getInfo()
+// }
