@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"go_server/db"
+	"go_server/log"
 	"go_server/models"
 	"net/http"
 
@@ -31,19 +31,26 @@ func ContactHandler(w http.ResponseWriter, r *http.Request) {
 	// fmt.Fprintln(w, "Contact page!")
 
 	w.Header().Set("Content-Type", "application/json")
-
-	var c models.Contact
-	err := json.NewDecoder(r.Body).Decode(&c)
-
-	if err != nil {
-		fmt.Println("Error")
+	switch r.Method {
+	case "GET":
+		//Will Eventually Add Some Authentication Business
+		var c models.Contact
+		selectedContacts, err := c.SelectAllContacts()
+		if err != nil {
+			//Write some http return code here usually gonna be some form of
+			//500 in this case as it means we failed to go to the db
+			log.Errorf("HTTP Server Error Return 500: %v", err)
+		}
+		json.NewEncoder(w).Encode(selectedContacts)
 	}
+	// var c models.Contact
+	// err := json.NewDecoder(r.Body).Decode(&c)
 
-	json.NewEncoder(w).Encode(c)
+	// if err != nil {
+	// 	fmt.Println("Error")
+	// }
 
 	// problem in passing here
-
-	db.GetInfo(&c) // calling the mysql db
 
 }
 
