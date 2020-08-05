@@ -30,8 +30,3 @@ func CreateMySQLHandler(mysqlConfig config.MySQL) {
 func Db() ServDB {
 	return persistentDb
 }
-
-// func main() {
-
-// 	//getInfo()
-// }

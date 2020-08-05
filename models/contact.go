@@ -29,6 +29,7 @@ func (c Contact) SelectAllContacts() ([]*Contact, error) {
 			return nil, err
 		}
 		selectedContacts = append(selectedContacts, contact)
+
 	}
 
 	return selectedContacts, nil
