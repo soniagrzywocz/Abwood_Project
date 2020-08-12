@@ -2,3 +2,4 @@ config/server.toml
 .vscode/
 .DS_Store
 log/error.log
+notes

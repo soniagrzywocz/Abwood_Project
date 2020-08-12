@@ -25,7 +25,6 @@ type MySQL struct {
 	Username string
 	Password string
 	Database string
-	Timezone string
 }
 
 type logging struct {

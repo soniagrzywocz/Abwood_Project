@@ -79,23 +79,15 @@ func ContactHandler(w http.ResponseWriter, r *http.Request) {
 
 	case "PUT":
 
-		var contacts []*models.Contact
+		var c models.Contact
 
-		params := mux.Vars(r)
-		for index, item := range contacts {
-			if item.Name == params["name"] {
-				contacts = append(contacts[:index], contacts[index+1:]...)
+		id, err := c.PutContact()
 
-				var contact models.Contact
-				_ = json.NewDecoder(r.Body).Decode(contact)
-				contact.Name = append(contacts, contact)
-				json.NewEncoder(w).Encode(&contact)
-
-				return
-			}
+		if err != nil {
+			log.Errorf("Failed to insert into a contact into database")
 		}
 
-		json.NewEncoder(w).Encode(contacts)
+		log.Printf("Inserted row with ID of: %d\n", id)
 
 	} // end of switch method
 

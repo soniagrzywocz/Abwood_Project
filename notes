@@ -14,3 +14,29 @@ Running the code use go run ./api -config_path="path/to/config"
 
 /Users/sonia/Desktop/ApprenticenshipP/config/server.toml
 
+
+// ------  Inventory API 
+json document will look sometihng like this 
+ {
+     id: price_cents :  int64
+     name: string
+     flooring_type: string
+     thickness: float64
+     color: string
+     area: float64 // may or may not be float64
+ }
+
+ TO DO:
+ 1. Make sure the put method works correctly
+ 2. Write Insert, Update, Remove Queries and test them directly in MySQL 
+ 3. Create a struct for the Inventory document
+ 4. Write basic Route and Route handler that prints received json back (
+     maybe add a field to the printed json that says what REQUEST_TYPE it was ie: put, patch, delete, get)
+5. Write struct methods to handle putting, patching, deleting anf retreving inventory information
+        (this end point will probaably need ot grab 1 or all)
+6. Update handler to call the appropriate method and reutrn the appropriate response for each HTTP Request type 
+
+
+
+later on add:
+- unit tests for th api

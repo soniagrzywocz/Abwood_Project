@@ -6,9 +6,10 @@ import (
 )
 
 type Contact struct {
-	Name    string `db:"name" json:"name"`
-	Email   string `db:"email" json:"email"`
-	Message string `db:"message" json:"message"`
+	ID      float64 `db:"id" json: "id"`
+	Name    string  `db:"name" json:"name"`
+	Email   string  `db:"email" json:"email"`
+	Message string  `db:"message" json:"message"`
 }
 
 func (c Contact) SelectAllContacts() ([]*Contact, error) {
@@ -33,4 +34,25 @@ func (c Contact) SelectAllContacts() ([]*Contact, error) {
 	}
 
 	return selectedContacts, nil
+}
+
+func (c Contact) PutContact() (int64, error) {
+
+	var insertedContact *Contact
+	stmt, err := db.Db().DB.Prepare("INSERT c.name, c.email, c.message")
+
+	if err != nil {
+		log.Errorf("Error when inserting a contact to a database")
+	}
+
+	defer stmt.Close()
+
+	res, err := stmt.Exec(insertedContact)
+
+	if err != nil {
+		log.Errorf("Error when getting the last inserted contact. Line 53")
+	}
+
+	return res.LastInsertId()
+
 }
