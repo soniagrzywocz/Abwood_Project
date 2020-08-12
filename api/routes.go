@@ -57,8 +57,6 @@ func setRoutes(router *LocalRouter) {
 
 func ContactHandler(w http.ResponseWriter, r *http.Request) {
 
-	// fmt.Fprintln(w, "Contact page!")
-
 	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
 	case "GET":
@@ -67,8 +65,6 @@ func ContactHandler(w http.ResponseWriter, r *http.Request) {
 		var c models.Contact
 		selectedContacts, err := c.SelectAllContacts()
 		if err != nil {
-			//Write some http return code here usually gonna be some form of
-			//500 in this case as it means we failed to go to the db
 
 			// serving HTTP 500
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -89,24 +85,13 @@ func ContactHandler(w http.ResponseWriter, r *http.Request) {
 
 		log.Printf("Inserted row with ID of: %d\n", id)
 
-	} // end of switch method
+	}
 
-} // end of ContactHandler
+}
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
+	// debuggin purposes
 	fmt.Fprintln(w, "Welcome to the home page")
-	//w.Header().Set("Content-Type", "application/json")
-
-	// probably not necessary here since it's just the home page, not the contact page
-
-	// var c models.Contact
-	// err := json.NewDecoder(r.Body).Decode(&c)
-
-	// if err != nil {
-	// 	fmt.Println("Error")
-	// }
-
-	// json.NewEncoder(w).Encode(c)
 
 }
