@@ -86,13 +86,13 @@ func InventoryHandler(w http.ResponseWriter, r *http.Request) {
 	case "PUT":
 		// same logic as PUT for contact but doesn't work. Check for problems here
 		var i models.InventoryItem
-		id, err := i.PutInventoryItem()
+		err := i.PutInventoryItem()
 
 		if err != nil {
 			log.Errorf("Failed to Insert inventory item into database")
 		}
 
-		log.Printf("Inserted inventoryItem with ID of: %d\n", id)
+		log.Printf("Inserted inventoryItem with ID of: %d\n", i.ID)
 
 	case "PATCH":
 		var i models.InventoryItem
