@@ -6,10 +6,10 @@ import (
 )
 
 type Contact struct {
-	ID      float64 `db:"id" json: "id"`
-	Name    string  `db:"name" json:"name"`
-	Email   string  `db:"email" json:"email"`
-	Message string  `db:"message" json:"message"`
+	ID      int64  `db:"id" json: "id"`
+	Name    string `db:"name" json:"name"`
+	Email   string `db:"email" json:"email"`
+	Message string `db:"message" json:"message"`
 }
 
 func (c Contact) SelectAllContacts() ([]*Contact, error) {
